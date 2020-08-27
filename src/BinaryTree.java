@@ -1,5 +1,4 @@
-import java.util.Scanner;
-import java.util.Stack;
+import java.util.*;
 
 public class BinaryTree {
     private class Node {
@@ -152,6 +151,28 @@ public class BinaryTree {
         }
     }
 
+    public List<Double> averageOfLevels() {
+        Queue<Node> queue = new LinkedList<>();
+        ArrayList<Double> res = new ArrayList<>();
+        queue.add(root);
+        while(!queue.isEmpty()) {
+            Queue<Node> neighbours = new LinkedList<>();
+            int count = 0, sum = 0;
+            while (!queue.isEmpty()) {
+                Node node = queue.remove();
+                sum += node.value;
+                count++;
+                if(node.left != null)
+                    neighbours.add(node.left);
+                if(node.right != null)
+                    neighbours.add(node.right);
+            }
+            queue = neighbours;
+            res.add(sum * 1.0 / count);
+        }
+
+        return res;
+    }
 
     public static void main(String[] args) {
         BinaryTree tree = new BinaryTree();
@@ -162,7 +183,7 @@ public class BinaryTree {
         tree.add(5);
         tree.add(7);
         tree.add(9);
-        tree.preOrderRecursive();
+        /*tree.preOrderRecursive();
         System.out.println();
         tree.preOrderIterative();
         System.out.println();
@@ -172,7 +193,8 @@ public class BinaryTree {
         System.out.println();
         tree.postOrderRecursive();
         System.out.println();
-        tree.postOrderIterative();
+        tree.postOrderIterative();*/
+        System.out.println(tree.averageOfLevels());
     }
 }
 
