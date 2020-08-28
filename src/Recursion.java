@@ -134,9 +134,62 @@ public class Recursion {
         return true;
     }
 
+    //Return the median of two sorted arrays of same size when they'd be merged
+    // O(logn)
+
+    static int medianSortedArrays(int[] a, int[] b, int sa, int ea, int sb, int eb) {
+
+        if(ea - sa == 1) {
+            int med = (Math.max(a[sa], b[sb]) + Math.min(a[ea], b[eb])) / 2;
+            return med;
+        }
+
+        int m1 = median(a, sa, ea);
+        int m2 = median(b, sb, eb);
+
+        if(m1 == m2)
+            return m1;
+        else if(m1 < m2) {
+            return medianSortedArrays(a, b, (ea + sa + 1) / 2, ea, sb, (eb + sb + 1) / 2);
+        } else {
+            return medianSortedArrays(a, b, sa, (ea + sa + 1) / 2, (eb + sb + 1) / 2, eb);
+        }
+
+    }
+
+    private static int median(int[] a, int sa, int ea) {
+        int len = ea - sa + 1;
+        if(len % 2 == 0)
+            return (a[sa + len / 2] + a[sa + len / 2 - 1]) / 2;
+        else
+            return a[sa + len / 2];
+    }
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        String input = sc.next();
+        int ar1[] = { 1, 2, 3, 6 };
+        int ar2[] = { 4, 6, 8, 10 };
+        int n1 = ar1.length;
+        int n2 = ar2.length;
+        if (n1 != n2) {
+            System.out.println(
+                    "Doesn't work for arrays "
+                            + "of unequal size");
+        }
+        else if (n1 == 0) {
+            System.out.println("Arrays are empty.");
+        }
+        else if (n1 == 1) {
+            System.out.println((ar1[0] + ar2[0]) / 2);
+        }
+        else {
+            System.out.println(
+                    "Median is "
+                            + medianSortedArrays(
+                            ar1, ar2, 0,
+                            ar1.length - 1, 0, ar2.length - 1));
+        }
+        /*String input = sc.next();
         int n = input.length();
 
         // To Store all palindromic partitions
@@ -157,7 +210,7 @@ public class Recursion {
                 System.out.print(allPart.get(i).get(j) + " ");
             }
             System.out.println();
-        }
+        }*/
     }
 
 

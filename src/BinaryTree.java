@@ -174,6 +174,65 @@ public class BinaryTree {
         return res;
     }
 
+    List<Integer> nums = new ArrayList();
+    public Node balanceBST(Node root) {
+        inorder(root);
+        return construct(0, nums.size() - 1);
+    }
+
+    public void inorder(Node node) {
+        if(node != null) {
+            if(node.left != null)
+                inorder(node.left);
+
+            nums.add(node.value);
+
+            if(node.right != null)
+                inorder(node.right);
+        }
+    }
+
+    public Node construct(int start, int end) {
+        if(start > end) {
+            return null;
+        }
+
+        int mid = start + (end - start) / 2;
+        Node node = new Node(nums.get(mid));
+        node.left = construct(start, mid - 1);
+        node.right = construct(mid + 1, end);
+        return node;
+    }
+
+    public int maxDepth() {
+        return maxDepth(root);
+    }
+
+    private int maxDepth(Node node) {
+        if(node == null)
+            return 0;
+        int leftDepth = maxDepth(node.left);
+        int rightDepth = maxDepth(node.right);
+        int maxDepth = Math.max(leftDepth, rightDepth) + 1;
+        return maxDepth;
+    }
+
+    public int minDepth() {
+        return minDepth(root);
+    }
+    private int minDepth(Node node) {
+        if(node == null)
+            return 0;
+        int leftDepth = minDepth(node.left);
+        int rightDepth = minDepth(node.right);
+        //int minDepth = Math.min(leftDepth, rightDepth) + 1;
+        if(leftDepth == 0 && rightDepth != 0)
+            return 1 + rightDepth;
+        else if(rightDepth == 0 && leftDepth != 0)
+            return 1 + leftDepth;
+        else
+            return 1 + Math.min(leftDepth, rightDepth);
+    }
     public static void main(String[] args) {
         BinaryTree tree = new BinaryTree();
         tree.add(6);
@@ -183,6 +242,7 @@ public class BinaryTree {
         tree.add(5);
         tree.add(7);
         tree.add(9);
+        System.out.println(tree.minDepth());
         /*tree.preOrderRecursive();
         System.out.println();
         tree.preOrderIterative();
@@ -194,7 +254,9 @@ public class BinaryTree {
         tree.postOrderRecursive();
         System.out.println();
         tree.postOrderIterative();*/
-        System.out.println(tree.averageOfLevels());
+        //System.out.println(tree.averageOfLevels());
+
+
     }
 }
 
