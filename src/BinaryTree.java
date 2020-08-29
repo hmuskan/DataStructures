@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class BinaryTree {
     private class Node {
@@ -233,6 +234,89 @@ public class BinaryTree {
         else
             return 1 + Math.min(leftDepth, rightDepth);
     }
+
+    public static List<String> watchedVideosByFriends(List<List<String>> watchedVideos, int[][] friends, int id, int level) {
+        Queue<Integer> queue = new LinkedList();
+        HashSet<Integer> visited = new HashSet();
+        queue.add(id);
+        visited.add(id);
+        int currLevel = 0;
+        while(!queue.isEmpty() && currLevel != level) {
+            int size = queue.size();
+            int currSize = 0;
+            while(currSize < size) {
+                int n = queue.remove();
+                currSize++;
+                for(int i : friends[n]) {
+                    if(!visited.contains(i)) {
+                        queue.add(i);
+                        visited.add(i);
+                    }
+                }
+            }
+            currLevel++;
+        }
+
+        Map<String, Integer> map = new TreeMap();
+        while(!queue.isEmpty()) {
+            int fid = queue.remove();
+            for(String l : watchedVideos.get(fid)) {
+                    map.put(l, map.getOrDefault(l, 0) + 1);
+
+            }
+        }
+
+        return sortByValue(map);
+
+    }
+    static List<String> sortByValue(Map<String, Integer> map) {
+        List<Map.Entry<String, Integer>> list = new LinkedList(map.entrySet());
+        Collections.sort(list, Comparator.comparing(Map.Entry::getValue));
+        List<String> res = new ArrayList<>();
+        for(Map.Entry<String, Integer> entry: list) {
+            res.add(entry.getKey());
+        }
+
+        return res;
+    }
+
+
+    public List<List<Integer>> zigzagLevelOrder(Node root) {
+        if(root == null) {
+            List<List<Integer>> blank = new ArrayList();
+            return blank;
+        }
+        Queue<Node> queue = new LinkedList();
+        List<List<Integer>> traversal = new ArrayList();
+        int toggle = 1;
+        queue.add(root);
+        while(!queue.isEmpty()) {
+            List<Integer> leveln = new ArrayList();
+            int size = queue.size();
+            int currSize = 0;
+            while(currSize < size) {
+                Node node = queue.remove();
+                currSize++;
+                if(toggle == -1) {
+                    leveln.add(0, node.value);
+                } else {
+                    leveln.add(node.value);
+                }
+                if(node.left != null) {
+                    queue.add(node.left);
+                }
+
+                if(node.right != null) {
+                    queue.add(node.right);
+                }
+
+            }
+            toggle *= -1;
+            traversal.add(leveln);
+        }
+        return traversal;
+    }
+    
     public static void main(String[] args) {
         BinaryTree tree = new BinaryTree();
         tree.add(6);
@@ -242,7 +326,19 @@ public class BinaryTree {
         tree.add(5);
         tree.add(7);
         tree.add(9);
-        System.out.println(tree.minDepth());
+        System.out.println(tree.zigzagLevelOrder(tree.root));
+
+        /*String[][] arr = {
+                {"A","B"},{"C"},{"B","C"},{"D"}
+        };
+        List<List<String>> watchedVideos = Arrays.stream(arr)
+                .map(Arrays::asList)
+                .collect(Collectors.toList());
+        
+        int[][] friends = {{1,2},{0,3},{0,3},{1,2}};
+
+        System.out.println(watchedVideosByFriends(watchedVideos, friends, 0, 1));*/
+
         /*tree.preOrderRecursive();
         System.out.println();
         tree.preOrderIterative();
